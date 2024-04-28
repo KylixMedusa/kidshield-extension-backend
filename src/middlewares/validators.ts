@@ -7,7 +7,11 @@ export const validatorMiddleware = (
   schema: z.ZodObject<any, any> | z.ZodArray<any>,
   key: "body" | "query" | "params" = "body"
 ) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (
+    req: Request<unknown, unknown, unknown, unknown>,
+    res: Response<unknown, any>,
+    next: NextFunction
+  ) => {
     try {
       schema.parse(req[key]);
       next();

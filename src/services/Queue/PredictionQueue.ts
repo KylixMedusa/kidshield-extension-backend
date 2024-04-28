@@ -24,7 +24,7 @@ export class PredictionQueue extends QueueBase {
     super();
 
     this.predictionQueue = new ConcurrentQueue({
-      concurrency: 5, // We don't need more concurrent jobs here because this queue does CPU-bound task, it means that it blocks event loop anyway
+      concurrency: 1, // We don't need more concurrent jobs here because this queue does CPU-bound task, it means that it blocks event loop anyway
       timeout: 0,
       onProcess: this.onProcess.bind(this),
       onSuccess: this.onSuccess.bind(this),
