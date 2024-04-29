@@ -5,7 +5,7 @@ export const SessionSchema = z.strictObject({
   metadata: z.strictObject({
     icon: z.string().url(),
     title: z.string(),
-    description: z.string().optional(),
+    description: z.string().optional().nullable(),
   }),
   userId: z.string(),
   createdAt: z.string(),
@@ -14,11 +14,11 @@ export const SessionSchema = z.strictObject({
 export type Session = z.infer<typeof SessionSchema>;
 
 export const CreateSessionRequestSchema = z.strictObject({
-  url: z.string().url(),
+  url: z.string(),
   metadata: z.strictObject({
     icon: z.string().url(),
     title: z.string(),
-    description: z.string().optional(),
+    description: z.string().optional().nullable(),
   }),
 });
 
