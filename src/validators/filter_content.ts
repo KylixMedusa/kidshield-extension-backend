@@ -7,6 +7,7 @@ export const HTMLNodeSchema = z.strictObject({
 });
 
 export const FilterContentRequestSchema = z.strictObject({
+  url: z.string(),
   dom: z.array(HTMLNodeSchema),
   images: z.array(z.string()),
 });
