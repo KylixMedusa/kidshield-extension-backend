@@ -43,6 +43,23 @@ class AuthController {
       );
     }
   }
+
+  async loginExtension(
+    req: Request<any, any, AuthValidator.LoginRequest>,
+    res: ResponseWithBody<AuthValidator.LoginExtensionResponse>
+  ): Promise<void> {
+    try {
+      const { email, password } = req.body;
+      const response = await authService.loginExtension(email, password);
+      ResponseGenerator.sendResponse(res, 200, "Success", response);
+    } catch (error) {
+      ResponseGenerator.sendResponse(
+        res,
+        ResponseStatus.BAD_REQUEST,
+        ResponseGenerator.getErrorMessage(error)
+      );
+    }
+  }
 }
 
 export default new AuthController();

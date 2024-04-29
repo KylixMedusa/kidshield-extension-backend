@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 
 import Mongo from "../db";
 import { AuthValidator } from "../validators";
+import { LoginExtensionResponse } from "../validators/auth";
 import userService from "./userService";
 
 class AuthService {
@@ -15,11 +16,11 @@ class AuthService {
     });
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("You're not registered! Please sign up.");
     }
 
     if (user.password !== password) {
-      throw new Error("Invalid password");
+      throw new Error("Wrong email or password");
     }
 
     return this.generateToken(user._id.toHexString());
@@ -40,6 +41,29 @@ class AuthService {
     const user = await userService.createUser({ name, email, password });
 
     return this.generateToken(user.insertedId.toHexString());
+  }
+
+  async loginExtension(
+    email: string,
+    password: string
+  ): Promise<LoginExtensionResponse> {
+    const user = await Mongo.users().findOne({
+      email,
+    });
+
+    if (!user) {
+      throw new Error("You're not registered! Please sign up.");
+    }
+
+    if (user.password !== password) {
+      throw new Error("Wrong email or password");
+    }
+
+    return {
+      token: this.generateToken(user._id.toHexString()),
+      isExtensionEnabled: user.isExtensionEnabled,
+      imageFilterMode: user.imageFilterMode,
+    };
   }
 }
 

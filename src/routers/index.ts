@@ -23,6 +23,12 @@ router.post(
 );
 
 router.post(
+  "/login-extension",
+  validatorMiddleware(AuthValidator.LoginSchema, "body"),
+  authController.loginExtension
+);
+
+router.post(
   "/register",
   validatorMiddleware(AuthValidator.RegisterSchema, "body"),
   authController.register
