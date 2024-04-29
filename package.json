@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start-redis": "redis-server",
     "start": "nodemon",
     "build": "tsc",
     "serve": "node dist/index.js"
