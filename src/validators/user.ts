@@ -10,15 +10,13 @@ export type User = {
   imageFilterMode: "blur" | "hide" | "grayscale";
 };
 
-export const UpdateUserSchema = z
-  .object({
-    name: z.string().optional(),
-    password: z.string().optional(),
+export const UpdateUserSchema = z.strictObject({
+  name: z.string().optional(),
+  password: z.string().optional(),
 
-    isExtensionEnabled: z.boolean().optional(),
-    filterStrictness: z.number().optional(),
-    imageFilterMode: z.enum(["blur", "hide", "grayscale"]).optional(),
-  })
-  .strict();
+  isExtensionEnabled: z.boolean().optional(),
+  filterStrictness: z.number().optional(),
+  imageFilterMode: z.enum(["blur", "hide", "grayscale"]).optional(),
+});
 
 export type UpdateUser = z.infer<typeof UpdateUserSchema>;

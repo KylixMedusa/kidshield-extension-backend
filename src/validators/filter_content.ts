@@ -1,19 +1,15 @@
 import { z } from "zod";
 
-export const HTMLNodeSchema = z
-  .object({
-    tag: z.string(),
-    text: z.string().nullable(),
-    id: z.string().nullable().optional(),
-  })
-  .strict();
+export const HTMLNodeSchema = z.strictObject({
+  tag: z.string(),
+  text: z.string().nullable(),
+  id: z.string().nullable().optional(),
+});
 
-export const FilterContentRequestSchema = z
-  .object({
-    dom: z.array(HTMLNodeSchema),
-    images: z.array(z.string()),
-  })
-  .strict();
+export const FilterContentRequestSchema = z.strictObject({
+  dom: z.array(HTMLNodeSchema),
+  images: z.array(z.string()),
+});
 
 export type FilterContentRequest = z.infer<typeof FilterContentRequestSchema>;
 
