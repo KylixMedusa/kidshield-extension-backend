@@ -1,26 +1,33 @@
-import fs from "fs";
+import Redis from "ioredis";
 
-import { LRUCache } from "./LRUCache";
+class ImageCache {
+  private redisClient: Redis;
 
-// Function to save cache to disk
-const saveCache = <K, V>(cache: LRUCache<K, V>): void => {
-  const data = JSON.stringify(cache.dump());
-  fs.writeFileSync("images_cache.json", data);
-};
-
-// Function to load cache from disk
-const loadCache = <K, V>(cache: LRUCache<K, V>): void => {
-  try {
-    const data = fs.readFileSync("images_cache.json", "utf-8");
-    cache.load(JSON.parse(data));
-  } catch (error) {
-    console.log("Failed to load cache:", error);
+  constructor() {
+    // Initialize Redis client
+    this.redisClient = new Redis();
   }
-};
 
-const ImageCache = {
-  saveCache,
-  loadCache,
-};
+  // Method to set a boolean value for a given string key
+  async setKey(key: string, value: boolean): Promise<string> {
+    return await this.redisClient.set(key, value.toString());
+  }
+
+  // Method to check if a key exists
+  async keyExists(key: string): Promise<boolean> {
+    return (await this.redisClient.exists(key)) === 1;
+  }
+
+  // Method to get a boolean value by string key
+  async getKey(key: string): Promise<boolean | null> {
+    const value = await this.redisClient.get(key);
+    return value !== null ? value === "true" : null;
+  }
+
+  // Method to clear the cache
+  async clear(): Promise<void> {
+    await this.redisClient.flushall();
+  }
+}
 
 export default ImageCache;

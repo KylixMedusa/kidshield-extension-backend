@@ -42,7 +42,7 @@ export class PredictionQueue extends QueueBase {
   }
 
   private onSuccess({ url, result }: OnSuccessParam): void {
-    this.cache.set(url, result);
+    this.cache.setKey(url, result);
 
     for (const [{ resolve }] of this.requestMap.get(url) as requestQueueValue) {
       resolve(result);
@@ -50,7 +50,7 @@ export class PredictionQueue extends QueueBase {
   }
 
   private onFailure({ url, error }: OnFailureParam): void {
-    this.cache.set(url, false);
+    this.cache.setKey(url, false);
 
     for (const [{ reject }] of this.requestMap.get(url) as requestQueueValue) {
       reject(error);

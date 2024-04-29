@@ -1,5 +1,4 @@
 import ImageCache from "../../utils/ImageCache";
-import { LRUCache } from "../../utils/LRUCache";
 import { Model } from "../Model/Model";
 
 export type requestQueueValue = Array<
@@ -17,7 +16,7 @@ export type CallbackFunction = (
 export class QueueBase {
   protected readonly model: Model;
   protected readonly requestMap: Map<string, requestQueueValue>;
-  protected readonly cache: LRUCache<string, boolean>;
+  protected readonly cache: ImageCache;
 
   constructor() {
     this.model = new Model({
@@ -25,8 +24,7 @@ export class QueueBase {
     });
 
     this.requestMap = new Map();
-    this.cache = new LRUCache(100000);
-    ImageCache.loadCache(this.cache);
+    this.cache = new ImageCache();
   }
 
   public clearCache(): void {

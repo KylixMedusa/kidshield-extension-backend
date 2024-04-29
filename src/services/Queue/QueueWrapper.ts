@@ -6,9 +6,11 @@ type IQueueWrapper = {
 
 export class QueueWrapper extends PredictionQueue implements IQueueWrapper {
   public async predict(url: string): Promise<boolean> {
-    return await new Promise((resolve, reject) => {
-      if (this.cache.has(url)) {
-        resolve(this.cache.get(url) as boolean);
+    return await new Promise(async (resolve, reject) => {
+      const isCached = await this.cache.keyExists(url);
+      if (isCached) {
+        const cachedValue = await this.cache.getKey(url);
+        resolve(cachedValue ?? false);
         return;
       }
 
