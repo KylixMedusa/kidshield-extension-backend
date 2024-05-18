@@ -1,8 +1,9 @@
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import Mongo from "../db";
 import { AuthValidator } from "../validators";
-import { LoginExtensionResponse } from "../validators/auth";
+import { LoginExtensionResponse, LoginResponse } from "../validators/auth";
 import userService from "./userService";
 
 class AuthService {
@@ -10,7 +11,7 @@ class AuthService {
     return jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: "7d" });
   }
 
-  async login(email: string, password: string): Promise<string> {
+  async login(email: string, password: string): Promise<LoginResponse> {
     const user = await Mongo.users().findOne({
       email,
     });
@@ -19,18 +20,29 @@ class AuthService {
       throw new Error("You're not registered! Please sign up.");
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       throw new Error("Wrong email or password");
     }
 
-    return this.generateToken(user._id.toHexString());
+    return {
+      token: this.generateToken(user._id.toHexString()),
+      user: {
+        _id: user._id.toHexString(),
+        name: user.name,
+        email: user.email,
+        isExtensionEnabled: user.isExtensionEnabled,
+        imageFilterMode: user.imageFilterMode,
+        filterStrictness: user.filterStrictness,
+      },
+    };
   }
 
   async register({
     name,
     email,
     password,
-  }: AuthValidator.RegisterRequest): Promise<any> {
+  }: AuthValidator.RegisterRequest): Promise<LoginResponse> {
     const userExists = await Mongo.users().findOne({
       email,
     });
@@ -38,9 +50,18 @@ class AuthService {
       throw new Error("User already exists");
     }
 
-    const user = await userService.createUser({ name, email, password });
+    const hashedPassword = await bcrypt.hash(password, 5);
 
-    return this.generateToken(user.insertedId.toHexString());
+    const user = await userService.createUser({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    return {
+      token: this.generateToken(user._id),
+      user,
+    };
   }
 
   async loginExtension(
@@ -55,7 +76,8 @@ class AuthService {
       throw new Error("You're not registered! Please sign up.");
     }
 
-    if (user.password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       throw new Error("Wrong email or password");
     }
 

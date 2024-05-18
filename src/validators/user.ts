@@ -20,3 +20,7 @@ export const UpdateUserSchema = z.strictObject({
 });
 
 export type UpdateUser = z.infer<typeof UpdateUserSchema>;
+
+export type UserResponse = {
+  _id: string;
+} & Omit<User, "password">;

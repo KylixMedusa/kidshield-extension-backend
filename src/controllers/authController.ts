@@ -15,8 +15,8 @@ class AuthController {
   ): Promise<void> {
     try {
       const { email, password } = req.body;
-      const token = await authService.login(email, password);
-      ResponseGenerator.sendResponse(res, 200, "Success", { token });
+      const result = await authService.login(email, password);
+      ResponseGenerator.sendResponse(res, 200, "Success", { ...result });
     } catch (error) {
       ResponseGenerator.sendResponse(
         res,
@@ -27,13 +27,13 @@ class AuthController {
   }
   async register(
     req: Request<any, any, AuthValidator.RegisterRequest>,
-    res: ResponseWithBody<AuthValidator.RegisterResponse>
+    res: ResponseWithBody<AuthValidator.LoginResponse>
   ): Promise<void> {
     try {
       const { name, email, password } = req.body;
-      const token = await authService.register({ name, email, password });
+      const result = await authService.register({ name, email, password });
       ResponseGenerator.sendResponse(res, 200, "User created successfully!", {
-        token,
+        ...result,
       });
     } catch (error) {
       ResponseGenerator.sendResponse(

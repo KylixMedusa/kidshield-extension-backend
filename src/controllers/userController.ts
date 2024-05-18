@@ -1,5 +1,3 @@
-import { WithId } from "mongodb";
-
 import userService from "../services/userService";
 import {
   RequestWithAuth,
@@ -8,12 +6,10 @@ import {
   ResponseWithBody,
 } from "../utils/ResponseGenerator";
 import { UserValidator } from "../validators";
+import { UserResponse } from "../validators/user";
 
 class UserController {
-  async read(
-    req: RequestWithAuth,
-    res: ResponseWithBody<WithId<UserValidator.User>>
-  ) {
+  async read(req: RequestWithAuth, res: ResponseWithBody<UserResponse>) {
     if (!req.userId) {
       return ResponseGenerator.sendResponse(
         res,
@@ -41,7 +37,7 @@ class UserController {
 
   async update(
     req: RequestWithAuth<any, any, UserValidator.UpdateUser>,
-    res: ResponseWithBody<WithId<UserValidator.User>>
+    res: ResponseWithBody<UserResponse>
   ) {
     if (!req.userId) {
       return ResponseGenerator.sendResponse(

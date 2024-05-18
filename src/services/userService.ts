@@ -1,7 +1,8 @@
-import { InsertOneResult, ObjectId, WithId } from "mongodb";
+import { ObjectId } from "mongodb";
 
 import Mongo from "../db";
 import { AuthValidator, UserValidator } from "../validators";
+import { UserResponse } from "../validators/user";
 
 const defaultFields: Omit<UserValidator.User, "email" | "password" | "name"> = {
   isExtensionEnabled: false,
@@ -14,19 +15,33 @@ class UserService {
     name,
     email,
     password,
-  }: AuthValidator.RegisterRequest): Promise<
-    InsertOneResult<UserValidator.User>
-  > {
+  }: AuthValidator.RegisterRequest): Promise<UserResponse> {
     const user = await Mongo.users().insertOne({
       name,
       email,
       password,
       ...defaultFields,
     });
-    return user;
+
+    const fetchedUser = await Mongo.users().findOne({
+      _id: user.insertedId,
+    });
+
+    if (!fetchedUser) {
+      throw new Error("Error creating user");
+    }
+
+    return {
+      _id: fetchedUser._id.toHexString(),
+      name: fetchedUser.name,
+      email: fetchedUser.email,
+      filterStrictness: fetchedUser.filterStrictness,
+      imageFilterMode: fetchedUser.imageFilterMode,
+      isExtensionEnabled: fetchedUser.isExtensionEnabled,
+    };
   }
 
-  async getUser(userId: string): Promise<WithId<UserValidator.User>> {
+  async getUser(userId: string): Promise<UserResponse> {
     const user = await Mongo.users().findOne({
       _id: new ObjectId(userId),
     });
@@ -35,13 +50,20 @@ class UserService {
       throw new Error("User not found");
     }
 
-    return user;
+    return {
+      _id: user._id.toHexString(),
+      name: user.name,
+      email: user.email,
+      filterStrictness: user.filterStrictness,
+      imageFilterMode: user.imageFilterMode,
+      isExtensionEnabled: user.isExtensionEnabled,
+    };
   }
 
   async updateUser(
     userId: string,
     newData: UserValidator.UpdateUser
-  ): Promise<WithId<UserValidator.User>> {
+  ): Promise<UserResponse> {
     const user = await Mongo.users().findOneAndUpdate(
       { _id: new ObjectId(userId) },
       { $set: newData },
@@ -52,7 +74,14 @@ class UserService {
       throw new Error("User not found");
     }
 
-    return user;
+    return {
+      _id: user._id.toHexString(),
+      name: user.name,
+      email: user.email,
+      filterStrictness: user.filterStrictness,
+      imageFilterMode: user.imageFilterMode,
+      isExtensionEnabled: user.isExtensionEnabled,
+    };
   }
 
   async deleteUser(userId: string): Promise<void> {

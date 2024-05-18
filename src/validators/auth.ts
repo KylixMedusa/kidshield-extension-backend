@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { User } from "./user";
+import { User, UserResponse } from "./user";
 
 export const LoginSchema = z.strictObject({
   email: z.string().email(),
@@ -19,10 +19,7 @@ export type RegisterRequest = z.infer<typeof RegisterSchema>;
 
 export type LoginResponse = {
   token: string;
-};
-
-export type RegisterResponse = {
-  token: string;
+  user: UserResponse;
 };
 
 export type LoginExtensionResponse = {
