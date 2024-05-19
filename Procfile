@@ -1,1 +1,1 @@
-web: pnpm serve
+web: node dist/index.js

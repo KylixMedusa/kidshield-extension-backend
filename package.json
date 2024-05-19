@@ -2,7 +2,7 @@
   "name": "kidshield-extension-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "nodemon",
     "build": "tsc",
