@@ -2,11 +2,11 @@
   "name": "kidshield-extension-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start": "node dist/index.js",
     "build": "tsc",
-    "serve": "node dist/index.js"
+    "dev": "nodemon"
   },
   "keywords": [],
   "author": "",
