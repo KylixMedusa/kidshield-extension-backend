@@ -3,6 +3,7 @@ import { configDotenv } from "dotenv";
 import express from "express";
 
 import Mongo from "./db";
+import RedisClient from "./redis";
 import router from "./routers";
 
 configDotenv();
@@ -14,6 +15,8 @@ Mongo.initiateConnection()
     console.log("MongoDB connected successfully");
 
     const port = process.env.PORT || 3000;
+
+    RedisClient.initiateConnection();
 
     app.use(
       express.json({
