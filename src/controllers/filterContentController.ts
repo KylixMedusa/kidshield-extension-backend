@@ -28,9 +28,11 @@ class FilterContentController {
     );
 
     await statService.updateStats(req.userId, {
-      totalBlockedImages: images.length,
-      totalFilteredVisits: 1,
-      totalVisits: 0,
+      totalBlockedImages: rephrasedNodes.images.length,
+      totalFilteredVisits:
+        rephrasedNodes.images.length || rephrasedNodes.modifications.length
+          ? 1
+          : 0,
     });
 
     ResponseGenerator.sendResponse(

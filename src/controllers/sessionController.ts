@@ -32,8 +32,6 @@ class SessionController {
 
       await statService.updateStats(req.userId, {
         totalVisits: 1,
-        totalBlockedImages: 0,
-        totalFilteredVisits: 0,
       });
 
       ResponseGenerator.sendResponse(
