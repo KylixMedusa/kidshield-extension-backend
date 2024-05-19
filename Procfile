@@ -1,1 +1,1 @@
-web: npm run serve
+web: pnpm serve
