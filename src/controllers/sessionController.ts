@@ -1,6 +1,7 @@
 import { WithId } from "mongodb";
 
 import sessionService from "../services/sessionService";
+import statService from "../services/statService";
 import {
   RequestWithAuth,
   ResponseGenerator,
@@ -28,6 +29,13 @@ class SessionController {
         userId: req.userId,
         createdAt: new Date().toISOString(),
       });
+
+      await statService.updateStats(req.userId, {
+        totalVisits: 1,
+        totalBlockedImages: 0,
+        totalFilteredVisits: 0,
+      });
+
       ResponseGenerator.sendResponse(
         res,
         ResponseStatus.SUCCESS,

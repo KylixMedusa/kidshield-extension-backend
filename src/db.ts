@@ -1,7 +1,7 @@
 import { Db, MongoClient } from "mongodb";
 
 import { Collections } from "./utils/constants";
-import { SessionValidator, UserValidator } from "./validators";
+import { SessionValidator, StatsValidator, UserValidator } from "./validators";
 
 abstract class Mongo {
   public static db: Db | null = null;
@@ -35,6 +35,14 @@ abstract class Mongo {
     }
 
     return this.db.collection<SessionValidator.Session>(Collections.Sessions);
+  }
+
+  public static stats() {
+    if (!this.db) {
+      throw new Error("Database connection not established");
+    }
+
+    return this.db.collection<StatsValidator.Stats>(Collections.Stats);
   }
 }
 

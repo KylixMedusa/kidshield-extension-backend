@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { ObjectId } from "mongodb";
 
 import Mongo from "../db";
@@ -64,10 +65,26 @@ class UserService {
     userId: string,
     newData: UserValidator.UpdateUser
   ): Promise<UserResponse> {
+    const dataToUpdate: Partial<UserValidator.UpdateUser> = {
+      ...newData,
+    };
+
+    if (newData.password) {
+      const hashedPassword = await bcrypt.hash(newData.password, 5);
+
+      dataToUpdate.password = hashedPassword;
+    }
+
     const user = await Mongo.users().findOneAndUpdate(
-      { _id: new ObjectId(userId) },
-      { $set: newData },
-      { returnDocument: "after" }
+      {
+        _id: new ObjectId(userId),
+      },
+      {
+        $set: dataToUpdate,
+      },
+      {
+        returnDocument: "after",
+      }
     );
 
     if (!user) {
