@@ -1,16 +1,22 @@
 {
   "name": "kidshield-extension-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for the KidShield Chrome Extension & Parental Dashboard",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "kidshield",
+    "chrome-extension",
+    "backend",
+    "redis",
+    "openai"
+  ],
+  "author": "KylixMedusa",
+  "license": "MIT",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
